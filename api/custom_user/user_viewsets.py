@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import NotAuthenticated
 
-from api.serializers import CustomUserSerializer
+from .user_serializers import CustomUserSerializer
 
 class AuthenticatedUserView(APIView):
     def get(self, request):

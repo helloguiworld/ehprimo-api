@@ -1,8 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+# from django.utils import timezone
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, first_name, surname, password=None):
+        """
+        Creates and saves a user with the given username, email, first_name,
+        surname and password.
+        """
         if not username:
             raise ValueError('Users must have an username')
         if not email:
@@ -24,6 +29,10 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, username, email, first_name, surname, password=None):
+        """
+        Creates and saves a superuser with the given username, email, first_name,
+        surname and password.
+        """
         user = self.create_user(
             username=username,
             email=email,
@@ -31,8 +40,8 @@ class CustomUserManager(BaseUserManager):
             surname=surname,
             password=password
         )
-        user.is_admin = True
         user.is_staff = True
+        user.is_admin = True
         user.is_superuser = True
         user.save(using=self._db)
         
@@ -44,10 +53,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=100, unique=True)
     first_name = models.CharField(max_length=20)
     surname = models.CharField(max_length=20)
+    
+    # date_joined = models.DateTimeField(default=timezone.now, editable=False)
 
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
     objects = CustomUserManager()

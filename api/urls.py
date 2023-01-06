@@ -6,6 +6,6 @@ router = routers.DefaultRouter()
 router.register(r'players', PlayerViewSet)
 
 urlpatterns = [
-    path('api/v1/user/', AuthenticatedUserView.as_view(), name='authenticated-user'),
+    path('api/auth-user/', AuthenticatedUserView.as_view(), name='authenticated-user'),
     path("api/v1/", include(router.urls)),
 ]

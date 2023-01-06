@@ -1,2 +1,2 @@
+from api.custom_user import CustomUserSerializer
 from .player_serializers import PlayerSerializer, ReadPlayerSerializer
-from .user_serializers import CustomUserSerializer

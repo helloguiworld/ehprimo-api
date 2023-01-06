@@ -1,2 +1,2 @@
-from .user_models import CustomUser, CustomUserManager
+from api.custom_user import CustomUser
 from .player_models import Player
