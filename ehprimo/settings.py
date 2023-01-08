@@ -32,6 +32,8 @@ DEBUG = os.environ.get('DEBUG') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = ['https://ehprimo.up.railway.app']
+
 
 # Application definition
 
