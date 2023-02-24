@@ -9,5 +9,5 @@ class AuthenticatedUserView(APIView):
     def get(self, request):
         if request.user and request.user.is_authenticated:
             userSerializer = CustomUserSerializer(request.user)
-            return Response(userSerializer.data, status.HTTP_200_OK)
+            return Response(userSerializer.data)
         raise NotAuthenticated()

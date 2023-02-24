@@ -4,6 +4,8 @@ from api.models import Player
 
 class PlayerUserSerializer(CustomUserSerializer):
     player_id = serializers.IntegerField(source='player.id')
+    player_record = serializers.IntegerField(source='player.record')
+    # player = serializers.DictField(source='player')
 
 
 class PlayerSerializer(serializers.ModelSerializer):
