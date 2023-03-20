@@ -2,10 +2,15 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.exceptions import NotAuthenticated
+from rest_framework.exceptions import NotAuthenticated, ValidationError
 
 from api.models import Player
-from api.serializers import PlayerUserSerializer, PlayerSerializer, ReadPlayerSerializer, CustomUserSerializer
+from api.serializers import \
+    PlayerSerializer, \
+    PlayerRecordSerializer, \
+    ReadPlayerSerializer, \
+    PlayerUserSerializer, \
+    CustomUserSerializer
 from api.permissions import IsUserDataOrAdminUserOrReadOnly
 
 class PlayerPermission(IsUserDataOrAdminUserOrReadOnly):
@@ -19,8 +24,12 @@ class PlayerViewSet(viewsets.ModelViewSet):
 
     # serializer_class = PlayerSerializer
     def get_serializer_class(self):
-        method = self.request.method
-        return ReadPlayerSerializer if method == 'GET' else PlayerSerializer
+        if(self.request.method == 'GET'):
+            return ReadPlayerSerializer
+        elif(self.action == 'new_record'):
+            return PlayerRecordSerializer
+        else:
+            return PlayerSerializer
 
     @action(methods=['post'], detail=False)
     def register(self, request):
@@ -42,3 +51,18 @@ class PlayerViewSet(viewsets.ModelViewSet):
             playerUserSerializer = PlayerUserSerializer(request.user)
             return Response(playerUserSerializer.data)
         raise NotAuthenticated()
+
+    @action(methods=['post'], detail=False, url_path='auth_user/new_record')
+    def new_record(self, request):
+        print(request)
+        new_record = request.data['record']
+        if(new_record.isdigit()):
+            if request.user and request.user.is_authenticated:
+                player = Player.objects.get(user=request.user)
+                player.record = new_record
+                player.save()
+                playerSerializer = PlayerSerializer(player)
+                return Response(playerSerializer.data)
+            raise NotAuthenticated()
+        raise ValidationError("New record must be a positive integer value.")
+        

@@ -1,17 +1,24 @@
 from rest_framework import serializers
+from api.dynamic_fields_model_serializer import DynamicFieldsModelSerializer
 from api.serializers import CustomUserSerializer
 from api.models import Player
 
-class PlayerUserSerializer(CustomUserSerializer):
-    player_id = serializers.IntegerField(source='player.id')
-    player_record = serializers.IntegerField(source='player.record')
-    # player = serializers.DictField(source='player')
-
-
-class PlayerSerializer(serializers.ModelSerializer):
+class PlayerSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Player
         fields = '__all__'
+
+
+class PlayerRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Player
+        fields = ['record']
+
+
+class PlayerUserSerializer(CustomUserSerializer):
+    player = PlayerSerializer(fields=('id', 'record'))
+    # player_id = serializers.IntegerField(source='player.id')
+    # player_record = serializers.IntegerField(source='player.record')
 
 
 class ReadPlayerSerializer(PlayerSerializer):
