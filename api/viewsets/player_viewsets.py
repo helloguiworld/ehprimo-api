@@ -56,8 +56,9 @@ class PlayerViewSet(viewsets.ModelViewSet):
     def new_record(self, request):
         print(request)
         new_record = request.data['record']
-        if(new_record.isdigit()):
+        if(type(new_record) == int or (type(new_record) == str and new_record.isdigit())):
             if request.user and request.user.is_authenticated:
+                if(type(new_record) == str): new_record = int(new_record)
                 player = Player.objects.get(user=request.user)
                 player.record = new_record
                 player.save()
