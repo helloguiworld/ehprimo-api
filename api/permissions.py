@@ -4,8 +4,7 @@ class IsAdminUserOrReadOnly(BasePermission):
     def has_permission(self, request, view):
         return bool(
             request.method in SAFE_METHODS or
-            request.user and
-            request.user.is_staff
+            (request.user and request.user.is_staff)
         )
 
 
@@ -14,5 +13,6 @@ class IsUserDataOrAdminUserOrReadOnly(IsAdminUserOrReadOnly):
         return bool(
             # request.method in SAFE_METHODS or
             (request.user and request.user.is_staff) or
-            obj.user == request.user
+            obj == request.user or
+            (hasattr(obj, 'user') and obj.user == request.user)
         )

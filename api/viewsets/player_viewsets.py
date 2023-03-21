@@ -15,7 +15,8 @@ from api.permissions import IsUserDataOrAdminUserOrReadOnly
 
 class PlayerPermission(IsUserDataOrAdminUserOrReadOnly):
     def has_permission(self, request, view):
-        return True if view.action == "register" else super().has_permission(request, view)
+        if view.action in ['register', 'new_record']: return True
+        else: return super().has_permission(request, view)
 
 
 class PlayerViewSet(viewsets.ModelViewSet):
@@ -60,6 +61,7 @@ class PlayerViewSet(viewsets.ModelViewSet):
             if request.user and request.user.is_authenticated:
                 if(type(new_record) == str): new_record = int(new_record)
                 player = Player.objects.get(user=request.user)
+                self.check_object_permissions(request, player)
                 player.record = new_record
                 player.save()
                 playerSerializer = PlayerSerializer(player)
